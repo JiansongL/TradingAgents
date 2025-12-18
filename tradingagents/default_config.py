@@ -17,6 +17,26 @@ DEFAULT_CONFIG = {
     "max_debate_rounds": 1,
     "max_risk_discuss_rounds": 1,
     "max_recur_limit": 100,
+    # Trading mode: 'stock' or 'options'
+    "trading_mode": "stock",  # Set to 'options' to enable options trading
+    # Options trading settings
+    "options_enabled": False,  # Enable options analysis
+    "preferred_options_strategies": [
+        "call", "put", "bull_call_spread", "bear_put_spread", 
+        "iron_condor", "straddle", "strangle", "covered_call"
+    ],
+    # Reinforcement Learning settings
+    "rl_enabled": False,  # Enable RL model for profit probability prediction
+    "rl_model_path": None,  # Path to trained RL model (None = training mode)
+    "rl_state_dim": 128,  # State vector dimension
+    "rl_action_dim": 3,  # Number of actions (BUY, HOLD, SELL)
+    "rl_learning_rate": 0.001,
+    "rl_gamma": 0.99,  # Discount factor
+    "rl_epsilon_start": 1.0,  # Initial exploration rate
+    "rl_epsilon_end": 0.01,  # Final exploration rate
+    "rl_epsilon_decay": 0.995,  # Exploration decay rate
+    "rl_memory_size": 10000,  # Experience replay buffer size
+    "rl_batch_size": 64,  # Training batch size
     # Data vendor configuration
     # Category-level configuration (default for all tools in category)
     "data_vendors": {
@@ -24,6 +44,7 @@ DEFAULT_CONFIG = {
         "technical_indicators": "yfinance",  # Options: yfinance, alpha_vantage, local
         "fundamental_data": "alpha_vantage", # Options: openai, alpha_vantage, local
         "news_data": "alpha_vantage",        # Options: openai, alpha_vantage, google, local
+        "options_data": "yfinance",          # Options: yfinance (currently only yfinance supported)
     },
     # Tool-level configuration (takes precedence over category-level)
     "tool_vendors": {

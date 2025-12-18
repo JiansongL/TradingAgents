@@ -484,6 +484,22 @@ def get_user_selections():
     selected_shallow_thinker = select_shallow_thinking_agent(selected_llm_provider)
     selected_deep_thinker = select_deep_thinking_agent(selected_llm_provider)
 
+    # Step 7: Trading mode (Stock or Options)
+    console.print(
+        create_question_box(
+            "Step 7: Trading Mode", "Select trading mode: Stock or Options"
+        )
+    )
+    trading_mode = select_trading_mode()
+
+    # Step 8: RL Enhancement (optional)
+    console.print(
+        create_question_box(
+            "Step 8: Reinforcement Learning", "Enable RL model for profit probability prediction"
+        )
+    )
+    rl_enabled, rl_model_path = select_rl_settings()
+
     return {
         "ticker": selected_ticker,
         "analysis_date": analysis_date,
@@ -493,6 +509,9 @@ def get_user_selections():
         "backend_url": backend_url,
         "shallow_thinker": selected_shallow_thinker,
         "deep_thinker": selected_deep_thinker,
+        "trading_mode": trading_mode,
+        "rl_enabled": rl_enabled,
+        "rl_model_path": rl_model_path,
     }
 
 
@@ -747,6 +766,12 @@ def run_analysis():
     config["deep_think_llm"] = selections["deep_thinker"]
     config["backend_url"] = selections["backend_url"]
     config["llm_provider"] = selections["llm_provider"].lower()
+    
+    # Add trading mode and RL settings
+    config["trading_mode"] = selections["trading_mode"]
+    config["rl_enabled"] = selections["rl_enabled"]
+    if selections["rl_model_path"]:
+        config["rl_model_path"] = selections["rl_model_path"]
 
     # Initialize the graph
     graph = TradingAgentsGraph(
@@ -816,6 +841,17 @@ def run_analysis():
             "System",
             f"Selected analysts: {', '.join(analyst.value for analyst in selections['analysts'])}",
         )
+        message_buffer.add_message(
+            "System", f"Trading mode: {selections['trading_mode'].upper()}"
+        )
+        if selections['rl_enabled']:
+            rl_mode = "Training" if not selections['rl_model_path'] else "Inference"
+            rl_msg = f"RL Enhancement: ENABLED ({rl_mode} mode)"
+            if selections['rl_model_path']:
+                rl_msg += f" - Model: {selections['rl_model_path']}"
+            message_buffer.add_message("System", rl_msg)
+        else:
+            message_buffer.add_message("System", "RL Enhancement: DISABLED")
         update_display(layout)
 
         # Reset agent statuses

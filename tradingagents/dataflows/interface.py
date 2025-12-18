@@ -16,6 +16,14 @@ from .alpha_vantage import (
     get_news as get_alpha_vantage_news
 )
 from .alpha_vantage_common import AlphaVantageRateLimitError
+# Options data imports
+from .options_data import (
+    get_options_chain as get_yfinance_options_chain,
+    calculate_option_greeks as calculate_yfinance_option_greeks,
+    get_implied_volatility as get_yfinance_implied_volatility,
+    analyze_option_strategy as analyze_yfinance_option_strategy,
+    get_option_volume_and_oi as get_yfinance_option_volume_and_oi
+)
 
 # Configuration and routing logic
 from .config import get_config
@@ -50,6 +58,16 @@ TOOLS_CATEGORIES = {
             "get_global_news",
             "get_insider_sentiment",
             "get_insider_transactions",
+        ]
+    },
+    "options_data": {
+        "description": "Options chain, Greeks, IV, and strategy analysis",
+        "tools": [
+            "get_options_chain",
+            "calculate_option_greeks",
+            "get_implied_volatility",
+            "analyze_option_strategy",
+            "get_option_volume_and_oi"
         ]
     }
 }
@@ -113,6 +131,22 @@ VENDOR_METHODS = {
         "alpha_vantage": get_alpha_vantage_insider_transactions,
         "yfinance": get_yfinance_insider_transactions,
         "local": get_finnhub_company_insider_transactions,
+    },
+    # options_data
+    "get_options_chain": {
+        "yfinance": get_yfinance_options_chain,
+    },
+    "calculate_option_greeks": {
+        "yfinance": calculate_yfinance_option_greeks,
+    },
+    "get_implied_volatility": {
+        "yfinance": get_yfinance_implied_volatility,
+    },
+    "analyze_option_strategy": {
+        "yfinance": analyze_yfinance_option_strategy,
+    },
+    "get_option_volume_and_oi": {
+        "yfinance": get_yfinance_option_volume_and_oi,
     },
 }
 

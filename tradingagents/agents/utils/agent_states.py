@@ -53,6 +53,17 @@ class AgentState(MessagesState):
 
     sender: Annotated[str, "Agent that sent this message"]
 
+    # Trading mode: 'stock' or 'options'
+    trading_mode: Annotated[str, "Trading mode: 'stock' or 'options'"]
+    
+    # Options-specific fields
+    options_report: Annotated[Optional[str], "Report from the Options Analyst"]
+    option_strategy: Annotated[Optional[str], "Recommended options strategy (e.g., 'call', 'put', 'spread', 'straddle')"]
+    strike_price: Annotated[Optional[float], "Strike price for the option"]
+    expiration_date: Annotated[Optional[str], "Expiration date for the option"]
+    implied_volatility: Annotated[Optional[float], "Implied volatility of the option"]
+    option_greeks: Annotated[Optional[dict], "Greeks (delta, gamma, theta, vega, rho) for risk assessment"]
+
     # research step
     market_report: Annotated[str, "Report from the Market Analyst"]
     sentiment_report: Annotated[str, "Report from the Social Media Analyst"]

@@ -274,3 +274,88 @@ def select_llm_provider() -> tuple[str, str]:
     print(f"You selected: {display_name}\tURL: {url}")
     
     return display_name, url
+
+
+def select_trading_mode() -> str:
+    """Select trading mode (Stock or Options) using interactive selection."""
+    
+    TRADING_MODE_OPTIONS = [
+        ("Stock - Traditional stock trading analysis", "stock"),
+        ("Options - Options trading with Greeks and IV analysis", "options"),
+    ]
+    
+    choice = questionary.select(
+        "Select Your [Trading Mode]:",
+        choices=[
+            questionary.Choice(display, value=value)
+            for display, value in TRADING_MODE_OPTIONS
+        ],
+        instruction="\n- Use arrow keys to navigate\n- Press Enter to select",
+        style=questionary.Style(
+            [
+                ("selected", "fg:cyan noinherit"),
+                ("highlighted", "fg:cyan noinherit"),
+                ("pointer", "fg:cyan noinherit"),
+            ]
+        ),
+    ).ask()
+    
+    if choice is None:
+        console.print("\n[red]No trading mode selected. Exiting...[/red]")
+        exit(1)
+    
+    return choice
+
+
+def select_rl_settings() -> Tuple[bool, Optional[str]]:
+    """Select RL enhancement settings using interactive selection."""
+    
+    RL_OPTIONS = [
+        ("Disabled - Use traditional analysis only", (False, None)),
+        ("Enabled (Training Mode) - Train new RL model from exploration", (True, None)),
+        ("Enabled (Inference Mode) - Use pre-trained RL model for predictions", (True, "model_path")),
+    ]
+    
+    choice = questionary.select(
+        "Select Your [RL Enhancement Mode]:",
+        choices=[
+            questionary.Choice(display, value=value)
+            for display, value in RL_OPTIONS
+        ],
+        instruction="\n- Use arrow keys to navigate\n- Press Enter to select",
+        style=questionary.Style(
+            [
+                ("selected", "fg:yellow noinherit"),
+                ("highlighted", "fg:yellow noinherit"),
+                ("pointer", "fg:yellow noinherit"),
+            ]
+        ),
+    ).ask()
+    
+    if choice is None:
+        console.print("\n[red]No RL setting selected. Exiting...[/red]")
+        exit(1)
+    
+    enabled, model_path_flag = choice
+    
+    # If user selected inference mode, ask for model path
+    if enabled and model_path_flag == "model_path":
+        model_path = questionary.text(
+            "Enter the path to your trained RL model:",
+            default="./models/rl_trading_agent.pth",
+            validate=lambda x: len(x.strip()) > 0 or "Please enter a valid path.",
+            style=questionary.Style(
+                [
+                    ("text", "fg:yellow"),
+                    ("highlighted", "noinherit"),
+                ]
+            ),
+        ).ask()
+        
+        if not model_path:
+            console.print("\n[red]No model path provided. Using default path.[/red]")
+            model_path = "./models/rl_trading_agent.pth"
+        
+        return enabled, model_path.strip()
+    
+    return enabled, None

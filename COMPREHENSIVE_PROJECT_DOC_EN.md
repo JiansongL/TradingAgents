@@ -6,26 +6,25 @@ This document consolidates the entire development history and functional specifi
 
 ## Table of Contents
 
-- [TradingAgents: Comprehensive Project Documentation](#tradingagents-comprehensive-project-documentation)
-  - [Table of Contents](#table-of-contents)
-  - [1. Project Overview](#1-project-overview)
-    - [Core Concept](#core-concept)
-    - [System Architecture](#system-architecture)
-  - [2. Core Functional Modules](#2-core-functional-modules)
-    - [Multi-Agent Analysis Framework](#multi-agent-analysis-framework)
-    - [Options Trading Extension](#options-trading-extension)
-    - [Reinforcement Learning Enhancement](#reinforcement-learning-enhancement)
-  - [3. User Interfaces](#3-user-interfaces)
-    - [Command-Line Interface (CLI)](#command-line-interface-cli)
-    - [Professional Web Dashboard (V3)](#professional-web-dashboard-v3)
-  - [4. Installation and Usage](#4-installation-and-usage)
-    - [Environment Setup](#environment-setup)
-    - [Running the CLI](#running-the-cli)
-    - [Running the Web App](#running-the-web-app)
-  - [5. Technical Implementation Details](#5-technical-implementation-details)
-    - [State Encoder](#state-encoder)
-    - [RL Model Architecture](#rl-model-architecture)
-    - [Streaming Output](#streaming-output)
+1. [**Project Overview**](#1-project-overview)
+    * [Core Concept](#core-concept)
+    * [System Architecture](#system-architecture)
+2. [**Core Functional Modules**](#2-core-functional-modules)
+    * [Multi-Agent Analysis Framework](#multi-agent-analysis-framework)
+    * [Options Trading Extension](#options-trading-extension)
+    * [Reinforcement Learning Enhancement](#reinforcement-learning-enhancement)
+3. [**User Interfaces**](#3-user-interfaces)
+    * [Command-Line Interface (CLI)](#command-line-interface-cli)
+    * [Professional Web Dashboard (V3)](#professional-web-dashboard-v3)
+4. [**Installation and Usage**](#4-installation-and-usage)
+    * [Environment Setup](#environment-setup)
+    * [Running the CLI](#running-the-cli)
+    * [Running the Web App](#running-the-web-app)
+5. [**Technical Implementation Details**](#5-technical-implementation-details)
+    * [State Encoder](#state-encoder)
+    * [RL Model Architecture](#rl-model-architecture)
+    * [Streaming Output](#streaming-output)
+6. [**Contributing and Citation**](#6-contributing-and-citation)
 
 ---
 
@@ -221,5 +220,25 @@ for message_part in analysis_stream:
     time.sleep(0.02)
 ```
 
+---
 
+## 6. Contributing and Citation
+
+We welcome any community contributions, whether it's bug fixes, feature suggestions, or documentation improvements.
+
+If this project is helpful to your research, please cite our paper:
+
+```
+@misc{xiao2025tradingagentsmultiagentsllmfinancial,
+      title={TradingAgents: Multi-Agents LLM Financial Trading Framework}, 
+      author={Yijia Xiao and Edward Sun and Di Luo and Wei Wang},
+      year={2025},
+      eprint={2412.20138},
+      archivePrefix={arXiv},
+      primaryClass={q-fin.TR},
+      url={https://arxiv.org/abs/2412.20138}, 
+}
+```
+
+---
 **Disclaimer**: This project is for academic research purposes only and does not constitute any investment advice. Financial markets are risky, and investment requires caution.

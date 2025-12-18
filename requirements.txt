@@ -22,5 +22,13 @@ redis
 chainlit
 rich
 questionary
+python-dotenv  # Load environment variables from .env file
 langchain_anthropic
 langchain-google-genai
+scipy  # Required for options Greeks calculation (Black-Scholes model)
+numpy  # Required for options calculations
+torch  # Required for RL model (DQN)
+matplotlib  # Required for training visualization
+streamlit  # Web interface for interactive dashboard
+plotly  # Interactive financial charts
+kaleido  # Static image export for plotly
