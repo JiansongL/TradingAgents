@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TSLA Dashboard | Wise Trade</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+  <style>
+    :root {
+      --bg: #070712;
+      --card: #0c0c1b;
+      --card-2: #0f1024;
+      --accent: #8b5cf6;
+      --accent-2: #ec4899;
+      --text: #f3f4f6;
+      --muted: #c4c8d5;
+      --line: rgba(255, 255, 255, 0.08);
+      --shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: radial-gradient(circle at 20% 20%, rgba(140, 92, 246, 0.18), transparent 26%),
+        radial-gradient(circle at 80% 10%, rgba(236, 72, 153, 0.12), transparent 22%),
+        radial-gradient(circle at 50% 80%, rgba(140, 92, 246, 0.08), transparent 38%),
+        linear-gradient(135deg, #05050f 0%, #0a0b1a 40%, #0c0c1b 100%);
+      color: var(--text);
+      font-family: "Manrope", system-ui, -apple-system, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .shell {
+      width: min(1200px, 95vw);
+      margin: 0 auto;
+      padding: 28px 0 72px;
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 18px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.02);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(12px);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      font-size: 18px;
+    }
+
+    .brand img {
+      width: 38px;
+      height: 38px;
+      object-fit: contain;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.04);
+      padding: 6px;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      color: var(--muted);
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 160ms ease;
+    }
+
+    .nav-links a:hover {
+      color: var(--text);
+    }
+
+    .btn {
+      border: none;
+      cursor: pointer;
+      border-radius: 14px;
+      font-weight: 700;
+      padding: 12px 16px;
+      font-size: 14px;
+      letter-spacing: 0.01em;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: transform 160ms ease, box-shadow 160ms ease;
+    }
+
+    .btn-primary {
+      background: var(--text);
+      color: #0c0c1b;
+      box-shadow: 0 10px 30px rgba(255, 255, 255, 0.08);
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 18px 48px rgba(0, 0, 0, 0.35);
+    }
+
+    .header {
+      margin-top: 32px;
+      margin-bottom: 24px;
+    }
+
+    .header h1 {
+      font-size: 42px;
+      font-weight: 800;
+      margin: 0 0 6px;
+      letter-spacing: -0.02em;
+    }
+
+    .header p {
+      color: var(--muted);
+      margin: 0;
+      font-size: 16px;
+    }
+
+    .dashboard {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 22px 22px 28px;
+      background: rgba(255, 255, 255, 0.02);
+      box-shadow: var(--shadow);
+    }
+
+    .dash-controls {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .chip-btn {
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text);
+      border-radius: 12px;
+      padding: 10px 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: border-color 160ms ease, background 160ms ease;
+    }
+
+    .chip-btn:hover {
+      border-color: rgba(139, 92, 246, 0.6);
+    }
+
+    .chip-btn.active {
+      border-color: var(--accent);
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(236, 72, 153, 0.2));
+    }
+
+    .chart-shell {
+      position: relative;
+      width: 100%;
+      min-height: 380px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+      padding: 12px;
+    }
+
+    .status-line {
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .agent-card {
+      margin-top: 32px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 18px 20px 20px;
+      background: rgba(255, 255, 255, 0.02);
+      box-shadow: var(--shadow);
+    }
+
+    .agent-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .agent-title {
+      font-weight: 800;
+      font-size: 18px;
+      letter-spacing: -0.01em;
+    }
+
+    .agent-sub {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .status-steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .status-step {
+      display: flex;
+      gap: 10px;
+      padding: 12px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.02);
+      transition: border-color 160ms ease, background 160ms ease;
+    }
+
+    .status-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      margin-top: 4px;
+      background: rgba(255, 255, 255, 0.18);
+      box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.4);
+      transition: all 200ms ease;
+    }
+
+    .status-step.active {
+      border-color: rgba(139, 92, 246, 0.7);
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.14), rgba(236, 72, 153, 0.08));
+    }
+
+    .status-step.active .status-dot {
+      background: #a855f7;
+      box-shadow: 0 0 0 6px rgba(168, 85, 247, 0.12);
+    }
+
+    .status-step.done .status-dot {
+      background: #22c55e;
+      box-shadow: none;
+    }
+
+    .step-label {
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    .step-desc {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    footer {
+      margin-top: 56px;
+      color: var(--muted);
+      font-size: 13px;
+      text-align: center;
+    }
+
+    @media (max-width: 900px) {
+      .nav {
+        flex-direction: column;
+        gap: 10px;
+        align-items: flex-start;
+      }
+
+      .header h1 {
+        font-size: 32px;
+      }
+
+      .nav-links {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header class="nav">
+      <a href="index.html" style="text-decoration:none; color:inherit;">
+        <div class="brand">
+          <img src="assets/logo.svg" alt="Wise Trade logo" onerror="this.onerror=null;this.src='assets/logo.png';" />
+          <span>Wise Trade</span>
+        </div>
+      </a>
+      <div class="nav-links">
+        <a href="index.html">← Back Home</a>
+      </div>
+    </header>
+
+    <div class="header">
+      <h1>TSLA Dashboard</h1>
+      <p>Tesla, Inc. · Real-time price analysis</p>
+    </div>
+
+    <section class="dashboard">
+      <div class="dash-controls">
+        <button class="chip-btn active" data-range="daily">Daily</button>
+        <button class="chip-btn" data-range="intraday">Intraday</button>
+      </div>
+      <div class="chart-shell">
+        <canvas id="price-chart" aria-label="TSLA price chart" role="img"></canvas>
+      </div>
+      <div class="status-line" id="chart-status">Loading TSLA data...</div>
+    </section>
+
+    <section class="agent-card">
+      <div class="agent-head">
+        <div>
+          <div class="agent-title">RL Agent Run</div>
+          <div class="agent-sub">Demonstration of policy search steps.</div>
+        </div>
+        <button id="run-agent" class="btn btn-primary" type="button">Run Agent</button>
+      </div>
+      <div class="status-steps">
+        <div class="status-step active" data-step="0">
+          <span class="status-dot"></span>
+          <div>
+            <div class="step-label">Thinking</div>
+            <div class="step-desc">Exploring state/action space.</div>
+          </div>
+        </div>
+        <div class="status-step" data-step="1">
+          <span class="status-dot"></span>
+          <div>
+            <div class="step-label">Processing</div>
+            <div class="step-desc">Running rollouts and value updates.</div>
+          </div>
+        </div>
+        <div class="status-step" data-step="2">
+          <span class="status-dot"></span>
+          <div>
+            <div class="step-label">Finished</div>
+            <div class="step-desc">Policy ready; delivering action.</div>
+          </div>
+        </div>
+      </div>
+      <div class="status-line" id="agent-status">Idle. Click run to see the agent process.</div>
+    </section>
+
+    <footer>Wise Trade Dashboard · TSLA real-time analysis</footer>
+  </div>
+
+  <script>
+    const ticker = 'TSLA';
+    const API_BASE = '/api';
+    const ctx = document.getElementById('price-chart').getContext('2d');
+    const statusLine = document.getElementById('chart-status');
+    const rangeButtons = document.querySelectorAll('.chip-btn[data-range]');
+
+    let currentRange = 'daily';
+    let chart;
+
+    const runAgentBtn = document.getElementById('run-agent');
+    const agentStatus = document.getElementById('agent-status');
+    const agentSteps = Array.from(document.querySelectorAll('.status-step'));
+    const agentTimeline = [
+      { label: 'Thinking', text: 'Exploring state/action space and initializing policy.' },
+      { label: 'Processing', text: 'Simulating rollouts and updating value estimates.' },
+      { label: 'Finished', text: 'Policy proposal ready. Displaying action summary.' }
+    ];
+
+    function setActiveButton(btn) {
+      rangeButtons.forEach(b => b.classList.toggle('active', b === btn));
+    }
+
+    async function fetchFromBackend(range) {
+      statusLine.textContent = `Loading ${ticker} ${range} data...`;
+      try {
+        const res = await fetch(`${API_BASE}/${ticker}/${range}`);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        if (data.error) throw new Error(data.error);
+        return data;
+      } catch (err) {
+        statusLine.textContent = `Failed to fetch: ${err.message}`;
+        throw err;
+      }
+    }
+
+    function renderChart(labels, values) {
+      const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+      gradient.addColorStop(0, 'rgba(99, 102, 241, 0.35)');
+      gradient.addColorStop(1, 'rgba(236, 72, 153, 0.05)');
+
+      if (chart) chart.destroy();
+      chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels,
+          datasets: [{
+            label: `${ticker} Price`,
+            data: values,
+            tension: 0.35,
+            borderColor: '#a855f7',
+            backgroundColor: gradient,
+            fill: true,
+            pointRadius: 2,
+            pointBackgroundColor: '#a855f7',
+            pointBorderColor: '#fff',
+            pointBorderWidth: 1,
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            x: {
+              ticks: { color: '#cbd5e1', maxTicksLimit: 10 },
+              grid: { display: false }
+            },
+            y: {
+              ticks: { color: '#cbd5e1', callback: v => `$${v}` },
+              grid: { color: 'rgba(255,255,255,0.04)' }
+            }
+          },
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              backgroundColor: '#0c0c1b',
+              borderColor: 'rgba(255,255,255,0.08)',
+              borderWidth: 1,
+              padding: 10,
+              callbacks: {
+                label: ctx => ` $${ctx.formattedValue}`
+              }
+            }
+          }
+        }
+      });
+    }
+
+    function setAgentStep(idx) {
+      agentSteps.forEach((step, i) => {
+        step.classList.toggle('active', i === idx);
+        step.classList.toggle('done', i < idx);
+      });
+    }
+
+    function runAgent() {
+      if (!runAgentBtn) return;
+      runAgentBtn.disabled = true;
+      let step = 0;
+      setAgentStep(step);
+      agentStatus.textContent = agentTimeline[step].text;
+
+      const advance = () => {
+        if (step >= agentTimeline.length - 1) {
+          runAgentBtn.disabled = false;
+          return;
+        }
+        step += 1;
+        setAgentStep(step);
+        agentStatus.textContent = agentTimeline[step].text;
+        const delay = step === agentTimeline.length - 1 ? 1200 : 1400;
+        setTimeout(advance, delay);
+      };
+
+      setTimeout(advance, 1200);
+    }
+
+    async function loadChart(range) {
+      try {
+        currentRange = range;
+        const btn = [...rangeButtons].find(b => b.dataset.range === range);
+        setActiveButton(btn);
+        const data = await fetchFromBackend(range);
+        renderChart(data.labels, data.values);
+        statusLine.textContent = `Loaded ${ticker} (${range}) · ${data.count} data points.`;
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    rangeButtons.forEach(btn => {
+      btn.addEventListener('click', () => loadChart(btn.dataset.range));
+    });
+
+    if (runAgentBtn) {
+      runAgentBtn.addEventListener('click', runAgent);
+    }
+
+    loadChart(currentRange);
+  </script>
+</body>
+</html>
