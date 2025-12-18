@@ -132,6 +132,11 @@ A `Streamlit`-based web application with a professional financial terminal aesth
 
 ---
 
+### Wise Trade UI
+* **Launch Command**: `Website/python app.py`
+<img width="1273" height="1032" alt="image" src="https://github.com/user-attachments/assets/7ee018d4-3d39-4574-a90d-67dd82eb6942" />
+
+
 ## 4. Installation and Usage
 
 ### Environment Setup
@@ -169,7 +174,13 @@ Follow the interactive prompts to configure the analysis.
 ```bash
 streamlit run web_app_v3.py
 ```
-Your browser will automatically open to `http://localhost:8501`.
+
+### Running the Web App
+
+```bash
+python Website/app.py
+```
+Your browser will automatically open to `http://localhost:8000`.
 
 ---
 
@@ -208,18 +219,9 @@ Softmax → Probabilities
 
 ### Streaming Output
 
-In `web_app_v3.py`, a Gemini-style typewriter effect is achieved by simulating `time.sleep()` and dynamically updating `st.markdown`, which significantly enhances the user experience.
+In Wise Trade UI, a Reinforcement Learning Trade simulation framework is used to explore advanced trading strategies and support academic research through real-world market data.
+<img width="1218" height="476" alt="image" src="https://github.com/user-attachments/assets/66b8424c-f90a-4793-b19f-426d984dbf13" />
 
-```python
-# Pseudocode
-full_report = ""
-placeholder = st.empty()
-
-for message_part in analysis_stream:
-    full_report += message_part
-    placeholder.markdown(full_report)
-    time.sleep(0.02)
-```
 
 
 **Disclaimer**: This project is for academic research purposes only and does not constitute any investment advice. Financial markets are risky, and investment requires caution.
